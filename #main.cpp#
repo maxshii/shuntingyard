@@ -31,7 +31,7 @@ int main()
 //creates new lnode
 lnode* newLnode(char data)
 {
-  lnode* lnode = new lnode*();
+  lnode* lnode = new lnode();
   lnode->data = data;
   lnode->next = NULL;
   return lnode;
