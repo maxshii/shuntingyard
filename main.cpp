@@ -1,7 +1,7 @@
 /*
  * An implementation of the Shunting Yard Algorithm that uses stack, queue, and tree data structures.
  * Author: Max Shi
- * Last modified: 2/10/2022
+ * Last modified: 2/14/2022
  */
 #include <iostream>
 using namespace::std;
@@ -14,27 +14,53 @@ struct lnode
   
 };
 
+struct stack
+{
+  lnode* head; //top of stack
+  stack()
+  {
+    head = NULL;
+  }
+};
+
+struct queue
+{
+  lnode* head; //where nodes are dequeued
+  lnode* tail; //where nodes are enqueued
+  queue()
+  {
+    head = NULL;
+    tail = NULL;
+  }
+};
+
 lnode* newLnode(char data);
 void push(lnode* &head, char data);
 char pop(lnode* &head);
 char peek(lnode* head);
+void enqueue(lnode* &head, lnode* &tail, char data);
+char dequeue(lnode* &head);
 void printList(lnode* head); 
 
 int main()
 {
-  lnode* head = NULL;
-  push(head, '2');
-  push(head, '4');
-  printList(head);
+  queue q;
+  enqueue(q.head, q.tail, '1');
+  enqueue(q.head, q.tail, '2');
+  enqueue(q.head, q.tail, '3');
+  printList(q.head);
+  cout<<'\n';
+  dequeue(q.head);
+  printList(q.head);
 }
 
 //creates new lnode
 lnode* newLnode(char data)
 {
-  lnode* lnode = new lnode*();
-  lnode->data = data;
-  lnode->next = NULL;
-  return lnode;
+  lnode* l = new lnode();
+  l->data = data;
+  l->next = NULL;
+  return l;
 }
 
 //adds to top of stack
@@ -45,7 +71,7 @@ void push(lnode* &head, char data)
   head = lnode; //head now points to the new node
 }
 
-//returns top of stack
+//returns top of stack and deletes it
 char pop(lnode* &head)
 {
   if(head == NULL)
@@ -61,7 +87,41 @@ char pop(lnode* &head)
   return data;
 }
 
- void printList(lnode* head)
+//returns value at the top of stack
+char peek(lnode* head)
+{
+  return head->data;
+}
+
+//adds to queue
+void enqueue(lnode* &head, lnode* &tail, char data)
+{
+  lnode* l = newLnode(data);
+
+  if(head == NULL)
+    {
+      head = l;
+    }
+  else if(tail == NULL)
+    {
+      tail = l;
+      head->next = tail;
+    }
+  else
+    {
+      //tail's next points to the new node and then tail points to the new node
+      tail->next = l;
+      tail = tail->next;
+    }
+}
+
+//returns front of queue and deletes it
+char dequeue(lnode* &head)
+{
+  return pop(head);
+}
+
+void printList(lnode* head)
  {
    if(head != NULL)
      {
