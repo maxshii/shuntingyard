@@ -1,0 +1,10 @@
+/*
+ * Class for a node of a binary tree
+ * Author: Max Shi
+ * Last Modified: 2/14/2022
+ */
+
+class bnode
+{
+
+};
