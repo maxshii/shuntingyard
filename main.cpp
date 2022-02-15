@@ -4,14 +4,19 @@
  * Last modified: 2/14/2022
  */
 #include <iostream>
+#include "binarynode.h"
 using namespace::std;
 
-//struct for a node of a linear linked list
+union data {
+    char math;
+    bnode* bnodePtr;
+};
+
+//struct for a node of a linear linked list that stores a char
 struct lnode
 {
-  char data;
+  data data;
   lnode* next;
-  
 };
 
 struct stack
@@ -34,45 +39,54 @@ struct queue
   }
 };
 
-lnode* newLnode(char data);
-void push(lnode* &head, char data);
-char pop(lnode* &head);
-char peek(lnode* head);
-void enqueue(lnode* &head, lnode* &tail, char data);
-char dequeue(lnode* &head);
+lnode* newLnode(data newData);
+void push(lnode* &head, data newData);
+auto pop(lnode* &head);
+auto peek(lnode* head);
+void enqueue(lnode* &head, lnode* &tail, data newData);
+auto dequeue(lnode* &head);
 void printList(lnode* head); 
+bnode* infixToTree(queue expression);
+bnode* postfixToTree(queue expression);
+bnode* prefixToTree(queue expression);
 
 int main()
 {
   queue q;
-  enqueue(q.head, q.tail, '1');
+
+  union data 
+  data a.math = '1';
+    data a.math = '1';
+
+  enqueue(q.head, q.tail, );
   enqueue(q.head, q.tail, '2');
   enqueue(q.head, q.tail, '3');
   printList(q.head);
   cout<<'\n';
-  dequeue(q.head);
+  postfixToTree(q);
+
   printList(q.head);
 }
 
 //creates new lnode
-lnode* newLnode(char data)
+lnode* newLnode(data newData)
 {
   lnode* l = new lnode();
-  l->data = data;
+  l->data = newData;
   l->next = NULL;
   return l;
 }
 
 //adds to top of stack
-void push(lnode* &head, char data)
+void push(lnode* &head, char d)
 {
-  lnode* lnode = newLnode(data);
+  lnode* lnode = newLnode(d);
   lnode->next = head; //next points to current head
   head = lnode; //head now points to the new node
 }
 
 //returns top of stack and deletes it
-char pop(lnode* &head)
+auto pop(lnode* &head)
 {
   if(head == NULL)
     {
@@ -80,7 +94,7 @@ char pop(lnode* &head)
     }
 
   //move head to next and return data in old head
-  char data = head->data;
+  char data = head->d.c;
   lnode* temp = head;
   head = head->next;
   delete temp;
@@ -88,9 +102,9 @@ char pop(lnode* &head)
 }
 
 //returns value at the top of stack
-char peek(lnode* head)
+auto peek(lnode* head)
 {
-  return head->data;
+  return head->data.c;
 }
 
 //adds to queue
@@ -116,7 +130,7 @@ void enqueue(lnode* &head, lnode* &tail, char data)
 }
 
 //returns front of queue and deletes it
-char dequeue(lnode* &head)
+auto dequeue(lnode* &head)
 {
   return pop(head);
 }
@@ -129,3 +143,31 @@ void printList(lnode* head)
        printList(head->next);
      }
  }
+
+bnode* infixToTree(queue expression)
+{
+  
+}
+
+bnode* postfixToTree(queue expression)
+{
+  cout << "Postfix expression: ";
+  printList(expression.head);
+  cout << '\n';
+
+  stack s;
+  while(expression.head != NULL)
+    {
+      char symbol = dequeue(expression.head);
+      if(isdigit(symbol) != 0)
+      {
+        bnode* n = new bnode();
+        push(s.head)
+      }
+    }
+}
+
+bnode* prefixToTree(queue expression)
+{
+  
+}

@@ -7,7 +7,15 @@
 class bnode
 {
  public:
+  bnode();
   char data;
   bnode* left;
-  bonde* right;
+  bnode* right;
 };
+
+bnode::bnode()
+{
+  data = '\0';
+  left = NULL;
+  right = NULL;
+}
