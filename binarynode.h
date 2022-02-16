@@ -9,5 +9,5 @@ class bnode
  public:
   char data;
   bnode* left;
-  bonde* right;
+  bnode* right;
 };

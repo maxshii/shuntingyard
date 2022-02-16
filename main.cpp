@@ -4,6 +4,7 @@
  * Last modified: 2/14/2022
  */
 #include <iostream>
+#include "binarynode.h"
 using namespace::std;
 
 //struct for a node of a linear linked list
@@ -11,13 +12,39 @@ struct lnode
 {
   char data;
   lnode* next;
-  
+  lnode(char data)
+  {
+    data = data;
+    next = NULL;
+  }
 };
 
 struct stack
 {
   lnode* head; //top of stack
   stack()
+  {
+    head = NULL;
+  }
+};
+
+//struct for a node of a linear linked list that contains a pointer to a binary tree node
+struct lnodeb
+{
+  bnode* data;
+  lnode* next;
+
+  lnodeb(bnode* data)
+  {
+    data = data;
+    next = NULL;
+  }
+};
+
+struct operandStack
+{
+  lnodeb* head; //top of stack
+  operandStack()
   {
     head = NULL;
   }
@@ -34,13 +61,21 @@ struct queue
   }
 };
 
-lnode* newLnode(char data);
+//functions for stack holding characters
 void push(lnode* &head, char data);
 char pop(lnode* &head);
 char peek(lnode* head);
+
+//functions for stack holding pointers to binary tree nodes
+void push(lnodeb* &head, char data);
+char pop(lnodeb* &head);
+char peek(lnodeb* head);
+
 void enqueue(lnode* &head, lnode* &tail, char data);
 char dequeue(lnode* &head);
 void printList(lnode* head); 
+bnode* buildTree(queue math);
+
 
 int main()
 {
@@ -54,19 +89,11 @@ int main()
   printList(q.head);
 }
 
-//creates new lnode
-lnode* newLnode(char data)
-{
-  lnode* l = new lnode();
-  l->data = data;
-  l->next = NULL;
-  return l;
-}
 
 //adds to top of stack
 void push(lnode* &head, char data)
 {
-  lnode* lnode = newLnode(data);
+  lnode* lnode = new struct lnode(data);
   lnode->next = head; //next points to current head
   head = lnode; //head now points to the new node
 }
@@ -96,21 +123,20 @@ char peek(lnode* head)
 //adds to queue
 void enqueue(lnode* &head, lnode* &tail, char data)
 {
-  lnode* l = newLnode(data);
-
+  lnode* lnode = new struct lnode(data);
   if(head == NULL)
     {
-      head = l;
+      head = lnode;
     }
   else if(tail == NULL)
     {
-      tail = l;
+      tail = lnode;
       head->next = tail;
     }
   else
     {
       //tail's next points to the new node and then tail points to the new node
-      tail->next = l;
+      tail->next = lnode;
       tail = tail->next;
     }
 }
@@ -124,8 +150,13 @@ char dequeue(lnode* &head)
 void printList(lnode* head)
  {
    if(head != NULL)
-     {
+     { 
        cout << head->data << " ";
        printList(head->next);
      }
  }
+/*
+bnode* buildTree(queue math)
+{
+  bnode* operand[10]
+}*/
