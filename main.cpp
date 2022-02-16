@@ -6,13 +6,7 @@
 #include <iostream>
 using namespace::std;
 
-//struct for a node of a linear linked list
-struct lnode
-{
-  char data;
-  lnode* next;
-  
-};
+
 
 struct stack
 {
@@ -44,14 +38,7 @@ int main()
   printList(q.head);
 }
 
-//creates new lnode
-lnode* newLnode(char data)
-{
-  lnode* l = new lnode();
-  l->data = data;
-  l->next = NULL;
-  return l;
-}
+
 
 //adds to top of stack
 void push(lnode* &head, char data)
