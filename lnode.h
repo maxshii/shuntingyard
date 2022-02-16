@@ -1,16 +1,13 @@
 //struct for a node of a linear linked list
 class lnode
 {
-  lnode(char data);
-  char data;
+  lnode();
   lnode* next;
 };
 
 //creates new lnode
-lnode::lnode(char data)
+lnode::lnode()
 {
-  lnode* l = new lnode();
-  l->data = data;
+  l->data = NULL;
   l->next = NULL;
-  return l;
 }
