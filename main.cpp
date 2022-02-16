@@ -23,23 +23,13 @@ struct stack
   }
 };
 
-struct queue
-{
-  lnode* head; //where nodes are dequeued
-  lnode* tail; //where nodes are enqueued
-  queue()
-  {
-    head = NULL;
-    tail = NULL;
-  }
-};
+
 
 lnode* newLnode(char data);
 void push(lnode* &head, char data);
 char pop(lnode* &head);
 char peek(lnode* head);
-void enqueue(lnode* &head, lnode* &tail, char data);
-char dequeue(lnode* &head);
+
 void printList(lnode* head); 
 
 int main()
@@ -93,39 +83,31 @@ char peek(lnode* head)
   return head->data;
 }
 
-//adds to queue
-void enqueue(lnode* &head, lnode* &tail, char data)
-{
-  lnode* l = newLnode(data);
 
-  if(head == NULL)
+bnode* infixToTree(queue expression)
+{
+  
+}
+
+bnode* postfixToTree(queue expression)
+{
+  cout << "Postfix expression: ";
+  printList(expression.head);
+  cout << '\n';
+
+  stack s;
+  while(expression.head != NULL)
     {
-      head = l;
-    }
-  else if(tail == NULL)
-    {
-      tail = l;
-      head->next = tail;
-    }
-  else
-    {
-      //tail's next points to the new node and then tail points to the new node
-      tail->next = l;
-      tail = tail->next;
+      char symbol = dequeue(expression.head);
+      if(isdigit(symbol) != 0)
+      {
+        bnode* n = new bnode();
+        push(s.head)
+      }
     }
 }
 
-//returns front of queue and deletes it
-char dequeue(lnode* &head)
+bnode* prefixToTree(queue expression)
 {
-  return pop(head);
+  
 }
-
-void printList(lnode* head)
- {
-   if(head != NULL)
-     {
-       cout << head->data << " ";
-       printList(head->next);
-     }
- }
