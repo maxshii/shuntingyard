@@ -4,6 +4,7 @@
  * Last modified: 2/14/2022
  */
 #include <iostream>
+#include <cctype>
 #include "binarynode.h"
 using namespace::std;
 
@@ -12,13 +13,9 @@ struct lnode
 {
   char data;
   lnode* next;
-  lnode(char data)
-  {
-    data = data;
-    next = NULL;
-  }
 };
 
+//struct containing pointer to top of stack, nodes store characters
 struct stack
 {
   lnode* head; //top of stack
@@ -32,19 +29,14 @@ struct stack
 struct lnodeb
 {
   bnode* data;
-  lnode* next;
-
-  lnodeb(bnode* data)
-  {
-    data = data;
-    next = NULL;
-  }
+  lnodeb* next;
 };
 
-struct operandStack
+//struct containing pointer to top of stack, nodes store binary tree nodes
+struct stackb
 {
   lnodeb* head; //top of stack
-  operandStack()
+  stackb()
   {
     head = NULL;
   }
@@ -62,15 +54,18 @@ struct queue
 };
 
 //functions for stack holding characters
+lnode* newLnode(char data);
 void push(lnode* &head, char data);
 char pop(lnode* &head);
 char peek(lnode* head);
 
 //functions for stack holding pointers to binary tree nodes
-void push(lnodeb* &head, char data);
-char pop(lnodeb* &head);
-char peek(lnodeb* head);
+lnodeb* newLnodeb(bnode* data);
+void push(lnodeb* &head, bnode* data);
+bnode* pop(lnodeb* &head);
+bnode* peek(lnodeb* head);
 
+//functions for queue
 void enqueue(lnode* &head, lnode* &tail, char data);
 char dequeue(lnode* &head);
 void printList(lnode* head); 
@@ -79,23 +74,56 @@ bnode* buildTree(queue math);
 
 int main()
 {
-  queue q;
-  enqueue(q.head, q.tail, '1');
-  enqueue(q.head, q.tail, '2');
-  enqueue(q.head, q.tail, '3');
-  printList(q.head);
-  cout<<'\n';
-  dequeue(q.head);
-  printList(q.head);
+  /*operandStack s;
+  bnode* a = new bnode('a');
+  push(s.head, a);
+  
+  cout<<(s.head)->data->data;
+  pop(s.head);*/
+  queue m;
+  enqueue(m.head, m.tail, '1');
+  enqueue(m.head, m.tail, '2');
+  enqueue(m.head, m.tail, '+');
+  enqueue(m.head, m.tail, '4');
+  enqueue(m.head, m.tail, '5');
+  enqueue(m.head, m.tail, '6');
+  enqueue(m.head, m.tail, '+');
+  enqueue(m.head, m.tail, '*');
+  enqueue(m.head, m.tail, '*');
+  cout << buildTree(m)->data;
+  
+
 }
 
+lnode* newLnode(char data)
+{
+  lnode* node = new lnode();
+  node->data = data;
+  node->next = NULL;
+  return node;
+}
+
+lnodeb* newLnodeb(bnode* data)
+{
+  lnodeb* node = new lnodeb();
+  node->data = data;
+  node->next = NULL;
+  return node;
+}
 
 //adds to top of stack
 void push(lnode* &head, char data)
 {
-  lnode* lnode = new struct lnode(data);
+  lnode* lnode = newLnode(data);
   lnode->next = head; //next points to current head
   head = lnode; //head now points to the new node
+}
+
+void push(lnodeb* &head, bnode* data)
+{
+  lnodeb* node = newLnodeb(data);
+  node->next = head; //next points to current head
+  head = node; //head now points to the new node
 }
 
 //returns top of stack and deletes it
@@ -113,6 +141,20 @@ char pop(lnode* &head)
   delete temp;
   return data;
 }
+bnode* pop(lnodeb* &head)
+{
+  if(head == NULL)
+    {
+      return NULL;
+    }
+
+  //move head to next and return data in old head
+  bnode* data = head->data;
+  lnodeb* temp = head;
+  head = head->next;
+  delete temp;
+  return data;
+}
 
 //returns value at the top of stack
 char peek(lnode* head)
@@ -120,10 +162,15 @@ char peek(lnode* head)
   return head->data;
 }
 
+bnode* peek(lnodeb* head)
+{
+  return head->data;
+}
+
 //adds to queue
 void enqueue(lnode* &head, lnode* &tail, char data)
 {
-  lnode* lnode = new struct lnode(data);
+  lnode* lnode = newLnode(data);
   if(head == NULL)
     {
       head = lnode;
@@ -155,8 +202,31 @@ void printList(lnode* head)
        printList(head->next);
      }
  }
-/*
+
+//builds a tree using a queue of mathematical symbols in postfix form
 bnode* buildTree(queue math)
 {
-  bnode* operand[10]
-}*/
+  stackb stack;
+  char symbol = dequeue(math.head);
+  while(symbol != '\0')
+    {
+      //if symbol is an integer, create a binary node containing the symbol and push it to stack
+      if(isdigit(symbol) != 0) 
+      {
+        bnode* tree = new bnode(symbol);
+        push(stack.head, tree);
+      }
+      //if the symbol is an operator, pop twice from the stack and create a new bnode with symbol as data and the popped as left and right
+      else if(symbol == '+' || symbol == '-' || symbol == '/' || symbol == '*' || symbol == '^')
+      {
+        bnode* T1 = pop(stack.head);
+        bnode* T2 = pop(stack.head);
+        bnode* tree = new bnode(symbol);
+        tree->left = T2;
+        tree->right = T1;
+        push(stack.head, tree);
+      }
+      symbol = dequeue(math.head);
+    }
+  return pop(stack.head);
+}
