@@ -69,8 +69,15 @@ bnode* peek(lnodeb* head);
 void enqueue(lnode* &head, lnode* &tail, char data);
 char dequeue(lnode* &head);
 void printList(lnode* head); 
-bnode* buildTree(queue math);
 
+//functions for binary tree
+bnode* buildTree(queue math);
+void printPost(bnode* tree);
+void printPre(bnode* tree);
+void printIn(bnode* tree);
+
+queue inToPost(queue math);
+int precedence(char num);
 
 int main()
 {
@@ -84,14 +91,12 @@ int main()
   enqueue(m.head, m.tail, '1');
   enqueue(m.head, m.tail, '2');
   enqueue(m.head, m.tail, '+');
+  enqueue(m.head, m.tail, '3');
   enqueue(m.head, m.tail, '4');
-  enqueue(m.head, m.tail, '5');
-  enqueue(m.head, m.tail, '6');
   enqueue(m.head, m.tail, '+');
   enqueue(m.head, m.tail, '*');
-  enqueue(m.head, m.tail, '*');
-  cout << buildTree(m)->data;
-  
+  bnode* tree = buildTree(m);
+  printIn(tree);
 
 }
 
@@ -229,4 +234,115 @@ bnode* buildTree(queue math)
       symbol = dequeue(math.head);
     }
   return pop(stack.head);
+}
+
+//print left subtree, right subtree, then operator
+void printPost(bnode* tree)
+{
+  if(tree != NULL)
+  {
+    printPost(tree->left);
+    printPost(tree->right);
+    cout << tree->data;
+  }
+}
+
+//print operator, then left subtree, then right subtree
+void printPre(bnode* tree)
+{
+  if(tree != NULL)
+  {
+    cout << tree->data;
+    printPre(tree->left);
+    printPre(tree->right);
+  }
+}
+
+//print parantheses when there is an operator, then left subtree, operator, right subtree, then closing parantheses
+void printIn(bnode* tree)
+{
+   if(tree != NULL)
+   {
+     if(tree->data == '+' || tree->data == '-' || tree->data == '/' || tree->data == '*' || tree->data == '^') //print parantheses if operator
+     {
+       cout << '(';
+     }
+     printIn(tree->left);
+     cout << tree->data;
+     printIn(tree->right);
+     if(tree->data == '+' || tree->data == '-' || tree->data == '/' || tree->data == '*' || tree->data == '^')
+     {
+       cout << ')';
+     }
+   }  
+}
+
+queue inToPost(queue math)
+{
+  queue output;
+  stack operatorStack;
+  char symbol = dequeue(math.head);
+  while(symbol != '\0')
+  {
+    if(isdigit(symbol) != 0)
+    {
+      enqueue(output.head, output.tail, symbol);
+    } 
+    else if(symbol == '+' || symbol == '-' || symbol == '/' || symbol == '*' || symbol == '^')
+    {
+      if(peek(operatorStack.head) != '(')
+      {
+        while(precendence(operatorStack.head->data) >= precendence(symbol))
+          {
+            char o = pop(operatorStack.head);
+            enqueue(output.head, output.tail, o);
+          }
+      }
+      enqueue(output.head, output.tail, symbol);
+    }
+    else if(symbol == '(')
+    {
+      enqueue(output.head, output.tail, symbol);
+    }
+    else if(symbol == ')')
+    {
+      while(peek(operatorStack.head) != '(')
+        {
+          char o = pop(operatorStack.head);
+          enqueue(output.head, output.tail, o);
+        }
+      pop(operatorStack.head);
+    }
+    symbol = dequeue(math.head);
+  }
+  while(peek(operatorStack.head) != '\0')
+    {
+      char o = pop(operatorStack.head);
+      enqueue(output.head, output.tail, o);
+    }
+  return output;
+}
+
+int precedence(char num)
+{
+  if(num == '^')
+  {
+    return 1;
+  } 
+  else if(num == '*')
+  {
+    return 1;
+  }
+  else if(num == '\')
+  {
+    return 1;
+  }
+  else if(num == '+')
+  {
+    return 0;
+  }
+  else if(num == '-')
+  {
+    return 0;
+  }
 }
