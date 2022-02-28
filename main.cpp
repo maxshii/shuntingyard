@@ -87,15 +87,29 @@ int main()
   
   cout<<(s.head)->data->data;
   pop(s.head);*/
+
   queue m;
-  enqueue(m.head, m.tail, '1');
-  enqueue(m.head, m.tail, '2');
-  enqueue(m.head, m.tail, '+');
   enqueue(m.head, m.tail, '3');
-  enqueue(m.head, m.tail, '4');
   enqueue(m.head, m.tail, '+');
+  enqueue(m.head, m.tail, '4');
   enqueue(m.head, m.tail, '*');
-  bnode* tree = buildTree(m);
+  enqueue(m.head, m.tail, '2');
+  enqueue(m.head, m.tail, '/');
+  enqueue(m.head, m.tail, '(');
+  enqueue(m.head, m.tail, '1');
+  enqueue(m.head, m.tail, '-');
+  enqueue(m.head, m.tail, '5');
+  enqueue(m.head, m.tail, ')');
+  enqueue(m.head, m.tail, '^');
+  enqueue(m.head, m.tail, '2');
+  enqueue(m.head, m.tail, '^');
+  enqueue(m.head, m.tail, '9');
+
+  queue a;
+  a = inToPost(m);
+  printList(a.head);
+  bnode* tree = buildTree(a);
+  cout << '\n';
   printIn(tree);
 
 }
@@ -164,12 +178,18 @@ bnode* pop(lnodeb* &head)
 //returns value at the top of stack
 char peek(lnode* head)
 {
-  return head->data;
+  if(head != NULL)
+    return head->data;
+  return '\0';
 }
 
 bnode* peek(lnodeb* head)
 {
-  return head->data;
+  if(head->data != NULL)
+  {
+    return head->data;
+    }
+  return NULL;
 }
 
 //adds to queue
@@ -196,7 +216,11 @@ void enqueue(lnode* &head, lnode* &tail, char data)
 //returns front of queue and deletes it
 char dequeue(lnode* &head)
 {
-  return pop(head);
+  if(head != NULL)
+  {
+    return pop(head);
+  }
+  return '\0';
 }
 
 void printList(lnode* head)
@@ -289,20 +313,27 @@ queue inToPost(queue math)
       enqueue(output.head, output.tail, symbol);
     } 
     else if(symbol == '+' || symbol == '-' || symbol == '/' || symbol == '*' || symbol == '^')
-    {
-      if(peek(operatorStack.head) != '(')
+    { 
+      if(operatorStack.head != NULL)
       {
-        while(precendence(operatorStack.head->data) >= precendence(symbol))
+        while(precedence(operatorStack.head->data) >= precedence(symbol))
           {
-            char o = pop(operatorStack.head);
-            enqueue(output.head, output.tail, o);
+            if(peek(operatorStack.head) != '(')
+            {
+              char o = pop(operatorStack.head);
+              enqueue(output.head, output.tail, o);
+            }
+            if(operatorStack.head == NULL)
+            {
+              break;
+            }
           }
       }
-      enqueue(output.head, output.tail, symbol);
+      push(operatorStack.head, symbol);
     }
     else if(symbol == '(')
     {
-      enqueue(output.head, output.tail, symbol);
+      push(operatorStack.head, symbol);
     }
     else if(symbol == ')')
     {
@@ -325,24 +356,29 @@ queue inToPost(queue math)
 
 int precedence(char num)
 {
-  if(num == '^')
+  if(num == '\0')
   {
-    return 1;
+    return 0;
+  }
+  else if(num == '^')
+  {
+    return 3;
   } 
   else if(num == '*')
   {
-    return 1;
+    return 2;
   }
-  else if(num == '\')
+  else if(num == '/')
   {
-    return 1;
+    return 2;
   }
   else if(num == '+')
   {
-    return 0;
+    return 1;
   }
   else if(num == '-')
   {
-    return 0;
+    return 1;
   }
+  return 0;
 }
