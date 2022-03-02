@@ -5,6 +5,7 @@
  */
 #include <iostream>
 #include <cctype>
+#include <cstring>
 #include "binarynode.h"
 using namespace::std;
 
@@ -81,36 +82,35 @@ int precedence(char num);
 
 int main()
 {
-  /*operandStack s;
-  bnode* a = new bnode('a');
-  push(s.head, a);
-  
-  cout<<(s.head)->data->data;
-  pop(s.head);*/
+  //reads a mathematical expression entered with infix notation, using spaces between each token. Outputs postfix form and lets user choose to output infix, postfix, or prefix.
+  while(true)
+    {
+      cout << "Enter expression:\n";
+      char input[80];
+      cin.getline(input, 80);
+      queue math;
+      for(int i = 0; i<strlen(input); i++)
+        {
+          if(input[i] != ' ')
+          {
+            enqueue(math.head, math.tail, input[i]);
+          }
+        }
+      math = inToPost(math);
+      printList(math.head);
+      bnode* tree = buildTree(math);
 
-  queue m;
-  enqueue(m.head, m.tail, '3');
-  enqueue(m.head, m.tail, '+');
-  enqueue(m.head, m.tail, '4');
-  enqueue(m.head, m.tail, '*');
-  enqueue(m.head, m.tail, '2');
-  enqueue(m.head, m.tail, '/');
-  enqueue(m.head, m.tail, '(');
-  enqueue(m.head, m.tail, '1');
-  enqueue(m.head, m.tail, '-');
-  enqueue(m.head, m.tail, '5');
-  enqueue(m.head, m.tail, ')');
-  enqueue(m.head, m.tail, '^');
-  enqueue(m.head, m.tail, '2');
-  enqueue(m.head, m.tail, '^');
-  enqueue(m.head, m.tail, '9');
+      cout << "\nChoose output (infix, postfix, prefix):\n";
+      cin.getline(input, 80);
+      if(strcmp(input, "infix") == 0)
+        printIn(tree);
+      if(strcmp(input, "postfix") == 0)
+        printPost(tree);
+      if(strcmp(input, "prefix") == 0)
+        printPre(tree);
 
-  queue a;
-  a = inToPost(m);
-  printList(a.head);
-  bnode* tree = buildTree(a);
-  cout << '\n';
-  printIn(tree);
+      cout << '\n';
+    }
 
 }
 
@@ -232,7 +232,7 @@ void printList(lnode* head)
      }
  }
 
-//builds a tree using a queue of mathematical symbols in postfix form
+//builds a tree using a queue of mathematical symbols in postfix form. Follows steps from https://en.wikipedia.org/wiki/Binary_expression_tree
 bnode* buildTree(queue math)
 {
   stackb stack;
@@ -301,6 +301,7 @@ void printIn(bnode* tree)
    }  
 }
 
+//converts infix to postfix using the shunting yard algorithm. Follows steps from https://en.wikipedia.org/wiki/Shunting-yard_algorithm
 queue inToPost(queue math)
 {
   queue output;
@@ -314,8 +315,9 @@ queue inToPost(queue math)
     } 
     else if(symbol == '+' || symbol == '-' || symbol == '/' || symbol == '*' || symbol == '^')
     { 
-      if(operatorStack.head != NULL)
+      if(operatorStack.head != NULL) 
       {
+         //while there is an operator o2 other than the left parenthesis at the top of the operator stack, and (o2 has greater precedence than o1), pop from operator stack to output
         while(precedence(operatorStack.head->data) >= precedence(symbol))
           {
             if(peek(operatorStack.head) != '(')
@@ -337,6 +339,7 @@ queue inToPost(queue math)
     }
     else if(symbol == ')')
     {
+      //while operator at top of operator stack is not left parantheses, pop from operator stack to output
       while(peek(operatorStack.head) != '(')
         {
           char o = pop(operatorStack.head);
@@ -346,6 +349,7 @@ queue inToPost(queue math)
     }
     symbol = dequeue(math.head);
   }
+  //pops all operators from operator stack to output
   while(peek(operatorStack.head) != '\0')
     {
       char o = pop(operatorStack.head);
@@ -354,6 +358,7 @@ queue inToPost(queue math)
   return output;
 }
 
+//returns an integer representing precedence of operator
 int precedence(char num)
 {
   if(num == '\0')
@@ -380,5 +385,5 @@ int precedence(char num)
   {
     return 1;
   }
-  return 0;
+  return 0; //returns 0 if none of these so it will not enter while loop on line 321
 }
