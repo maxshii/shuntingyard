@@ -1,7 +1,7 @@
 /*
  * An implementation of the Shunting Yard Algorithm that uses stack, queue, and tree data structures.
  * Author: Max Shi
- * Last modified: 2/18/2022
+ * Last modified: 3/2/2022
  */
 #include <iostream>
 #include <cctype>
